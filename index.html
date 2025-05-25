@@ -29,6 +29,8 @@
             position: relative;
             margin: 0;
             padding: 0;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         h1 {
@@ -48,13 +50,24 @@
             padding: 0 10px;
             box-sizing: border-box;
             opacity: 0;
-            display: none; /* Initially hidden */
         }
 
         @keyframes romanticMove {
-            0% { transform: translate(0, 100vh) scale(0.8) rotate(0deg); opacity: 0; filter: blur(5px); }
-            50% { transform: translate(0, 20px) scale(1.1) rotate(2deg); opacity: 0.7; filter: blur(2px); }
-            100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; filter: blur(0); }
+            0% { 
+                transform: translate(0, 100vh) scale(0.8) rotate(0deg); 
+                opacity: 0; 
+                filter: blur(5px);
+            }
+            50% { 
+                transform: translate(0, 20px) scale(1.1) rotate(2deg); 
+                opacity: 0.7; 
+                filter: blur(2px);
+            }
+            100% { 
+                transform: translate(0, 0) scale(1) rotate(0deg); 
+                opacity: 1; 
+                filter: blur(0);
+            }
         }
 
         @media (max-width: 600px) {
@@ -78,8 +91,129 @@
         }
 
         @keyframes smallFadeIn {
-            0% { opacity: 0; transform: translateY(20px) scale(0.9); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
+            0% { 
+                opacity: 0; 
+                transform: translateY(20px) scale(0.9); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        .intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff6b9d, #f8bbd9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            z-index: 1000;
+            padding: clamp(20px, 5vw, 30px);
+            box-sizing: border-box;
+        }
+
+        .intro.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+
+        .intro h1 {
+            font-family: "Great Vibes", cursive;
+            font-size: clamp(24px, 7vw, 40px);
+            text-align: center;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            margin-bottom: 15px;
+            position: static;
+            transform: none;
+            opacity: 1;
+        }
+
+        .intro p {
+            font-family: "Dancing Script", cursive;
+            font-size: clamp(16px, 4.5vw, 20px);
+            text-align: center;
+            max-width: 90%;
+            margin: 15px 0;
+            line-height: 1.4;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .intro button {
+            padding: clamp(10px, 3vw, 12px) clamp(20px, 5vw, 25px);
+            font-size: clamp(14px, 4vw, 18px);
+            font-family: "Dancing Script", cursive;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            min-width: 120px;
+            min-height: 44px;
+        }
+
+        .intro button:hover,
+        .intro button:active {
+            transform: scale(1.05);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .main-content {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            z-index: 10;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .main-content.visible {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .music-control {
+            position: fixed;
+            top: 8px;
+            right: 8px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            z-index: 1100;
+        }
+
+        .music-control.play::before {
+            content: '▶';
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .music-control.pause::before {
+            content: '❚❚';
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .music-control:hover,
+        .music-control:active {
+            background: rgba(255, 255, 255, 0.5);
         }
 
         .sunflwr {
@@ -91,7 +225,6 @@
             transform: translate(-50%, 0%);
             animation: sway 5s ease-in-out infinite;
             z-index: 200;
-            display: none; /* Initially hidden */
         }
 
         .new-flower {
@@ -560,138 +693,47 @@
             0%, 100% { transform: translate(-50%, -50%) rotate(-45deg) scale(1); }
             50% { transform: translate(-50%, -50%) rotate(-45deg) scale(1.2); }
         }
-
-        /* Welcome Screen Styles */
-        #welcome-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(to bottom, #f8bbd9, #f093fb);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            text-align: center;
-            opacity: 1;
-            transition: opacity 1s ease;
-        }
-
-        #welcome-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        #welcome-screen h2 {
-            font-family: "Great Vibes", cursive;
-            font-size: clamp(28px, 8vw, 40px);
-            color: #fff;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            animation: glow 2.5s ease-in-out infinite;
-        }
-
-        @keyframes glow {
-            0% { text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-            50% { text-shadow: 0 0 20px rgba(255,255,255,0.8); }
-            100% { text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-        }
-
-        #welcome-screen p {
-            font-family: "Dancing Script", cursive;
-            font-size: clamp(16px, 4vw, 20px);
-            color: #ffe4e6;
-            max-width: 80%;
-            margin-bottom: 2rem;
-        }
-
-        .btn {
-            background: linear-gradient(45deg, #ff6b9d, #f093fb);
-            color: white;
-            padding: 1rem 2rem; /* Increased padding for larger touch target */
-            border-radius: 25px;
-            border: none;
-            cursor: pointer;
-            font-size: clamp(18px, 4.5vw, 20px);
-            font-family: "Great Vibes", cursive;
-            transition: all 0.4s ease;
-            box-shadow: 0 0 15px rgba(255,107,157,0.5);
-            z-index: 2100; /* Ensure button is above all else */
-            touch-action: manipulation; /* Improve touch responsiveness */
-        }
-
-        .btn:hover {
-            transform: translateY(-2px) scale(1.02);
-            background: linear-gradient(45deg, #f093fb, #ff6b9d);
-            box-shadow: 0 8px 15px rgba(255,107,157,0.7);
-        }
-
-        .btn::before {
-            content: '🌸';
-            margin-right: 0.4rem;
-            font-size: 1.2rem;
-            animation: heartbeat 1.5s infinite;
-        }
-
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            20% { transform: scale(1.15); }
-            40% { transform: scale(1); }
-            60% { transform: scale(1.15); }
-            100% { transform: scale(1); }
-        }
-
-        /* Audio Error Message */
-        #audio-error {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 107, 157, 0.9);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-family: "Dancing Script", cursive;
-            font-size: 16px;
-            z-index: 2200;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
-    <div id="welcome-screen">
-        <h2>My Dearest Shy</h2>
-        <p>A garden of love awaits you. Click below to let our story bloom.</p>
-        <button id="begin-btn" class="btn">Begin Our Garden</button>
-    </div>
-
-    <h1 id="title">Click on the center flower</h1>
     <audio id="backgroundMusic" loop>
         <source src="blue.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
-    <div id="audio-error">Unable to play music. Please try refreshing the page.</div>
 
-    <div class="sunflwr">
-        <div class="sunflwr__leaf--left"></div>
-        <div class="sunflwr__leaf--right"></div>
-        <div class="sunflwr__stem"></div>
-        <div class="sunflwr__center initial"></div>
-        <div class="sunflwr__pedal--1"></div>
-        <div class="sunflwr__pedal--2"></div>
-        <div class="sunflwr__pedal--3"></div>
-        <div class="sunflwr__pedal--4"></div>
-        <div class="sunflwr__pedal--5"></div>
-        <div class="sunflwr__pedal--6"></div>
-        <div class="sunflwr__pedal--7"></div>
-        <div class="sunflwr__pedal--8"></div>
-        <div class="sunflwr__pedal--9"></div>
-        <div class="sunflwr__pedal--10"></div>
-        <div class="sunflwr__pedal--11"></div>
-        <div class="sunflwr__pedal--12"></div>
+    <div class="intro" id="garden-intro">
+        <h1>My Love's Garden, Shy 💕</h1>
+        <p>Plant the seeds of our love with each tap.</p>
+        <button onclick="startGarden()">Begin Our Garden</button>
+        <div class="heart" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="heart" style="left: 25%; animation-delay: 0.5s;"></div>
+        <div class="heart" style="left: 40%; animation-delay: 1s;"></div>
+        <div class="heart" style="left: 55%; animation-delay: 1.5s;"></div>
+        <div class="heart" style="left: 70%; animation-delay: 2s;"></div>
+        <div class="heart" style="left: 85%; animation-delay: 2.5s;"></div>
+    </div>
+
+    <div class="main-content" id="main-content">
+        <div class="music-control pause" id="music-control" onclick="toggleMusic()"></div>
+        <h1 id="title">Click on the center flower</h1>
+        <div class="sunflwr">
+            <div class="sunflwr__leaf--left"></div>
+            <div class="sunflwr__leaf--right"></div>
+            <div class="sunflwr__stem"></div>
+            <div class="sunflwr__center initial"></div>
+            <div class="sunflwr__pedal--1"></div>
+            <div class="sunflwr__pedal--2"></div>
+            <div class="sunflwr__pedal--3"></div>
+            <div class="sunflwr__pedal--4"></div>
+            <div class="sunflwr__pedal--5"></div>
+            <div class="sunflwr__pedal--6"></div>
+            <div class="sunflwr__pedal--7"></div>
+            <div class="sunflwr__pedal--8"></div>
+            <div class="sunflwr__pedal--9"></div>
+            <div class="sunflwr__pedal--10"></div>
+            <div class="sunflwr__pedal--11"></div>
+            <div class="sunflwr__pedal--12"></div>
+        </div>
     </div>
 
     <script>
@@ -756,7 +798,7 @@
             let gardenComplete = false;
             let positionIndex = 0;
             let lastInteractionTime = 0;
-            const debounceTime = 300; // 300ms debounce
+            const debounceTime = 300;
 
             function getFlowerPositions() {
                 return [
@@ -1059,21 +1101,44 @@
                 setTimeout(displayNextMessage, 1500);
             }
 
-            function startGarden(x, y) {
-                if (gardenStarted) return;
-                gardenStarted = true;
-                const initialCenter = document.querySelector('.sunflwr__center.initial');
-                if (initialCenter) {
-                    initialCenter.classList.remove('initial');
+            function toggleMusic() {
+                const audio = document.getElementById('backgroundMusic');
+                const control = document.getElementById('music-control');
+                if (audio.paused) {
+                    audio.play().catch(e => console.log('Audio play failed:', e));
+                    control.classList.remove('play');
+                    control.classList.add('pause');
+                } else {
+                    audio.pause();
+                    control.classList.remove('pause');
+                    control.classList.add('play');
                 }
-                const title = document.querySelector('#title');
-                if (title) {
-                    title.innerHTML = 'Happy Monthsary Shy💕<br><small>Every tap shows how beautiful you are🥰💕</small>';
-                }
-                createHeart(x, y);
-                createSparkle(x, y);
-                // console.log('Garden started at:', x, y);
             }
+
+            function startGarden() {
+                document.getElementById('garden-intro').classList.add('hidden');
+                const mainContent = document.getElementById('main-content');
+                setTimeout(() => {
+                    mainContent.classList.add('visible');
+                    gardenStarted = true;
+                    const initialCenter = document.querySelector('.sunflwr__center.initial');
+                    if (initialCenter) {
+                        initialCenter.classList.remove('initial');
+                    }
+                    const title = document.querySelector('#title');
+                    if (title) {
+                        title.innerHTML = 'Happy Monthsary Shy💕<br><small>Every tap shows how beautiful you are🥰💕</small>';
+                    }
+                    const audio = document.getElementById('backgroundMusic');
+                    audio.play().catch(e => console.log('Audio play failed:', e));
+                    const control = document.getElementById('music-control');
+                    control.classList.remove('play');
+                    control.classList.add('pause');
+                }, 500);
+            }
+
+            // Expose startGarden to the global scope
+            window.startGarden = startGarden;
 
             function growFlower(clickX, clickY) {
                 if (gardenComplete) {
@@ -1160,102 +1225,38 @@
                     showCompletionMessage();
                     startCherryBlossoms();
                 }
-                // console.log('New flower added. Total flowers:', flowerCount);
             }
 
             function handleInteraction(x, y, target) {
                 const currentTime = Date.now();
                 if (currentTime - lastInteractionTime < debounceTime) {
-                    // console.log('Interaction debounced');
                     return;
                 }
                 lastInteractionTime = currentTime;
 
                 if (target.classList.contains('initial')) {
-                    startGarden(x, y);
-                    // console.log('Initial center clicked');
+                    createHeart(x, y);
+                    createSparkle(x, y);
                     return;
                 }
-
-                if (gardenStarted && target.classList.contains('sunflwr__center')) {
+                
+                if (gardenStarted) {
                     growFlower(x, y);
-                    // console.log('Flower center clicked');
                 }
             }
 
-            // Welcome Screen Logic
-            const welcomeScreen = document.getElementById('welcome-screen');
-            const beginBtn = document.getElementById('begin-btn');
-            const title = document.getElementById('title');
-            const sunflwr = document.querySelector('.sunflwr');
-            const music = document.getElementById('backgroundMusic');
-            const audioError = document.getElementById('audio-error');
-
-            beginBtn.addEventListener('click', () => {
-                welcomeScreen.classList.add('hidden');
-                const playPromise = music.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.error("Audio playback failed:", error);
-                        audioError.style.display = 'block';
-                        setTimeout(() => audioError.style.display = 'none', 5000);
-                    });
-                }
-                setTimeout(() => {
-                    welcomeScreen.style.display = 'none';
-                    title.style.display = 'block';
-                    sunflwr.style.display = 'block';
-                }, 1000); // Match transition duration
-                // console.log('Begin button clicked');
-            });
-
-            // Add touch event for button explicitly
-            beginBtn.addEventListener('touchstart', (e) => {
-                e.stopPropagation(); // Prevent touchstart from bubbling to document
-                beginBtn.click(); // Trigger click event
-                // console.log('Begin button touched');
-            }, { passive: true });
-
-            // Event listeners for sunflower interactions
-            const centers = document.querySelectorAll('.sunflwr__center');
             document.addEventListener('click', (e) => {
-                const target = e.target.closest('.sunflwr__center');
-                if (target) {
-                    handleInteraction(e.clientX, e.clientY, target);
-                }
+                if ('ontouchstart' in window) return;
+                if (e.target.classList.contains('music-control') || e.target.tagName === 'BUTTON') return;
+                handleInteraction(e.clientX, e.clientY, e.target);
             });
 
             document.addEventListener('touchstart', (e) => {
-                const target = e.target.closest('.sunflwr__center');
-                if (target) {
-                    e.preventDefault(); // Prevent default only for sunflower touches
-                    const touch = e.touches[0];
-                    handleInteraction(touch.clientX, touch.clientY, target);
-                }
-            }, { passive: false });
-
-            // Update centers when new flowers are added
-            const observer = new MutationObserver(() => {
-                const newCenters = document.querySelectorAll('.sunflwr__center');
-                newCenters.forEach(center => {
-                    center.removeEventListener('click', handleCenterClick);
-                    center.addEventListener('click', handleCenterClick);
-                    center.removeEventListener('touchstart', handleCenterTouch);
-                    center.addEventListener('touchstart', handleCenterTouch, { passive: false });
-                });
-            });
-
-            function handleCenterClick(e) {
-                handleInteraction(e.clientX, e.clientY, e.target);
-            }
-
-            function handleCenterTouch(e) {
+                if (e.target.classList.contains('music-control') || e.target.tagName === 'BUTTON') return;
                 e.preventDefault();
                 const touch = e.touches[0];
                 handleInteraction(touch.clientX, touch.clientY, e.target);
-            }
-
-            observer.observe(document.body, { childList: true, subtree: true });
+            }, { passive: false });
 
             setInterval(() => {
                 createSparkle(
