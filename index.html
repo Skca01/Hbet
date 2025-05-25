@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Treasure of Our Love</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Great_Vibes&display=swap");
+
+        html {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body {
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: "Dancing Script", cursive;
+            color: #fff;
+            position: relative;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .background-animations {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .heart-bg, .petal-bg, .star-bg, .orb-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        .heart-bg.active, .petal-bg.active, .star-bg.active, .orb-bg.active {
+            display: block;
+        }
+
+        .heart-bg .heart {
+            position: absolute;
+            width: clamp(10px, 3vw, 18px);
+            height: clamp(10px, 3vw, 18px);
+            background: linear-gradient(45deg, #ff6b9d, #f093fb);
+            transform: translate(-50%, -50%) rotate(-45deg);
+            animation: floatHeart 4s ease-in-out forwards;
+            box-shadow: 0 0 6px rgba(255, 107, 157, 0.5);
+        }
+
+        .heart-bg .heart:before,
+        .heart-bg .heart:after {
+            content: '';
+            width: clamp(10px, 3vw, 18px);
+            height: clamp(10px, 3vw, 18px);
+            position: absolute;
+            left: clamp(5px, 1.5vw, 9px);
+            top: 0;
+            background: linear-gradient(45deg, #ff6b9d, #f093fb);
+            border-radius: clamp(5px, 1.5vw, 9px) clamp(5px, 1.5vw, 9px) 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 clamp(5px, 1.5vw, 9px);
+        }
+
+        .heart-bg .heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: clamp(5px, 1.5vw, 9px) clamp(5px, 1.5vw, 9px);
+        }
+
+        .petal-bg .petal {
+            position: absolute;
+            width: 12px;
+            height: 20px;
+            background: linear-gradient(45deg, #ff6b9d, #f8bbd9);
+            border-radius: 50% 50% 0 0;
+            animation: fallPetal 5s linear forwards;
+            transform-origin: bottom;
+        }
+
+        @keyframes fallPetal {
+            0% { transform: translate(-50%, -100%) rotate(0deg); opacity: 1; }
+            50% { transform: translate(-50%, 50vh) rotate(45deg); opacity: 0.8; }
+            100% { transform: translate(-50%, 100vh) rotate(90deg); opacity: 0; }
+        }
+
+        .star-bg .bg-star {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite alternate;
+            box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+        }
+
+        .orb-bg .orb {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #f093fb, #f5576c);
+            border-radius: 50%;
+            animation: orbitOrb 5s ease-in-out infinite;
+            box-shadow: 0 0 8px rgba(255, 107, 157, 0.8);
+        }
+
+        @keyframes orbitOrb {
+            0% { transform: translate(-50%, -50%) rotate(0deg) translateX(40px); opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { transform: translate(-50%, -50%) rotate(360deg) translateX(40px); opacity: 0.7; }
+        }
+
+        .intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff6b9d, #f8bbd9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            z-index: 1000;
+            padding: clamp(20px, 5vw, 30px);
+            box-sizing: border-box;
+        }
+
+        .intro.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+
+        .intro h1 {
+            font-family: "Great Vibes", cursive;
+            font-size: clamp(24px, 7vw, 40px);
+            text-align: center;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            margin-bottom: 15px;
+        }
+
+        .intro p {
+            font-family: "Dancing Script", cursive;
+            font-size: clamp(16px, 4.5vw, 20px);
+            text-align: center;
+            max-width: 90%;
+            margin: 15px 0;
+            line-height: 1.4;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .intro button {
+            padding: clamp(10px, 3vw, 12px) clamp(20px, 5vw, 25px);
+            font-size: clamp(14px, 4vw, 18px);
+            font-family: "Dancing Script", cursive;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            min-width: 120px;
+            min-height: 44px;
+        }
+
+        .intro button:hover,
+        .intro button:active {
+            transform: scale(1.05);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .main-content {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            z-index: 10;
+            padding: clamp(15px, 4vw, 20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .main-content.visible {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .main-content.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .main-content h1 {
+            font-family: "Great Vibes", cursive;
+            font-size: clamp(24px, 7vw, 40px);
+            text-align: center;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            margin-bottom: 15px;
+        }
+
+        .heart-container, .memory-container, .constellation-container, .letter-container {
+            background: linear-gradient(45deg, #ff6b9d, #f8bbd9);
+            padding: clamp(15px, 4vw, 20px);
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: clamp(180px, 90vw, 320px);
+            max-width: 100%;
+            animation: fadeIn 1.5s ease-in forwards;
+            position: relative;
+            z-index: 20;
+            box-sizing: border-box;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .music-control {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .music-control.play::before {
+            content: '▶';
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .music-control.pause::before {
+            content: '❚❚';
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .music-control:hover,
+        .music-control:active {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .heart-shape {
+            width: clamp(100px, 25vw, 120px);
+            height: clamp(100px, 25vw, 120px);
+            cursor: pointer;
+            position: relative;
+            margin: 15px 0;
+            transition: transform 0.3s ease;
+            touch-action: none;
+        }
+
+        .heart-shape:hover,
+        .heart-shape:active {
+            transform: scale(1.1);
+        }
+
+        .heart-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2));
+        }
+
+        .heart-outline {
+            fill: none;
+            stroke: #fff;
+            stroke-width: 3;
+        }
+
+        .heart-fill {
+            fill: url(#heartGradient);
+            clip-path: inset(100% 0 0 0);
+            transition: clip-path 0.5s ease;
+        }
+
+        #counter {
+            font-size: clamp(18px, 4.5vw, 22px);
+            font-family: "Dancing Script", cursive;
+            color: #fff;
+            text-align: center;
+        }
+
+        #progress-bar {
+            width: 80%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            overflow: hidden;
+            border: 2px solid #fff;
+        }
+
+        #progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(45deg, #f5576c, #f093fb);
+            transition: width 0.5s ease;
+            border-radius: 3px;
+        }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .memory-card {
+            width: clamp(60px, 20vw, 80px);
+            height: clamp(60px, 20vw, 80px);
+            background: linear-gradient(45deg, #f5576c, #f093fb);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .memory-card:before {
+            content: '💕';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .memory-card.flipped:before {
+            opacity: 0;
+        }
+
+        .memory-card:hover,
+        .memory-card:active {
+            transform: scale(1.05);
+        }
+
+        .memory-card.matched {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            cursor: default;
+        }
+
+        .constellation-container {
+            width: clamp(220px, 80vw, 360px);
+        }
+
+        .constellation-canvas {
+            width: clamp(200px, 60vw, 280px);
+            height: clamp(200px, 60vw, 280px);
+            background: rgba(0, 0, 50, 0.3);
+            border-radius: 12px;
+            position: relative;
+            margin: 15px 0 10px 0;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .star {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+            animation: twinkle 2s ease-in-out infinite alternate;
+        }
+
+        .star.distractor {
+            background: #ddd;
+            box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .star:hover,
+        .star:active {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 1);
+        }
+
+        .star.connected {
+            background: #ff6b9d;
+            box-shadow: 0 0 12px rgba(255, 107, 157, 0.8);
+        }
+
+        .message-text {
+            font-size: clamp(16px, 4vw, 20px);
+            text-align: center;
+            max-width: 90%;
+            line-height: 1.4;
+            margin: 10px 0;
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .message-slot {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+            color: #fff;
+            border-bottom: 2px dashed #fff;
+            transition: color 0.3s ease;
+        }
+
+        .message-slot.filled {
+            color: #ff6b9d;
+            border-bottom: 2px solid #ff6b9d;
+            animation: fillLetter 0.5s ease forwards;
+        }
+
+        @keyframes fillLetter {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .flying-letter {
+            position: absolute;
+            font-size: clamp(16px, 4vw, 20px);
+            font-family: "Dancing Script", cursive;
+            color: #ff6b9d;
+            pointer-events: none;
+            z-index: 1000;
+            animation: flyLetter 1s ease forwards;
+        }
+
+        @keyframes flyLetter {
+            0% { opacity: 1; transform: translate(0, 0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1.2); }
+        }
+
+        .letter-container {
+            background: linear-gradient(45deg, #ff6b9d, #f8bbd9);
+            padding: clamp(20px, 5vw, 25px);
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            width: clamp(220px, 80vw, 360px);
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .letter-text {
+            font-size: clamp(14px, 4vw, 18px);
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 8px;
+            display: inline-block;
+            text-align: left;
+        }
+
+        .word-slot {
+            display: inline-block;
+            padding: clamp(3px, 1vw, 6px) clamp(6px, 2vw, 10px);
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px dashed #fff;
+            border-radius: 8px;
+            font-size: clamp(14px, 4vw, 18px);
+            color: #fff;
+            min-width: 50px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease, opacity 0.3s ease;
+            margin: 2px 3px;
+            min-height: 24px;
+        }
+
+        .word-slot.filled {
+            background: rgba(255, 255, 255, 0.9);
+            color: #764ba2;
+            border: 2px solid #fff;
+            cursor: default;
+            animation: fillWord 0.5s ease forwards;
+        }
+
+        @keyframes fillWord {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .word-slot:hover:not(.filled),
+        .word-slot:active:not(.filled) {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .letter-input {
+            width: 100%;
+            padding: clamp(10px, 3vw, 12px);
+            font-size: clamp(16px, 4vw, 20px);
+            font-family: "Dancing Script", cursive;
+            border: 2px solid #fff;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #764ba2;
+            text-align: center;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+
+        .letter-input::placeholder {
+            color: #aa88cc;
+            opacity: 0.8;
+        }
+
+        .clue-prompt {
+            font-size: clamp(12px, 3.5vw, 16px);
+            color: #fff;
+            margin-top: 8px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+
+        button.submit, button.continue {
+            padding: clamp(10px, 3vw, 12px) clamp(20px, 5vw, 25px);
+            font-size: clamp(14px, 4vw, 18px);
+            font-family: "Dancing Script", cursive;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            margin: 8px;
+            min-width: 120px;
+            min-height: 44px;
+        }
+
+        button.submit:hover, button.continue:hover,
+        button.submit:active, button.continue:active {
+            transform: scale(1.05);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        button.continue.visible, button.submit.visible {
+            display: block;
+        }
+
+        .error-message, .success-message {
+            font-size: clamp(12px, 3.5vw, 16px);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            margin: 8px 0;
+        }
+
+        .error-message {
+            color: #ffe4e6;
+        }
+
+        .success-message {
+            color: #fff;
+        }
+
+        .error-message.show, .success-message.show {
+            opacity: 1;
+        }
+
+        .clue {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 230, 230, 0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: clamp(20px, 5vw, 30px);
+            box-sizing: border-box;
+        }
+
+        .clue.show {
+            display: flex;
+            animation: fadeInModal 0.5s ease forwards;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .clue-container {
+            background: linear-gradient(45deg, #ff6b9d, #f8bbd9);
+            padding: clamp(20px, 5vw, 25px);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(255, 102, 153, 0.3);
+            max-width: 90%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .clue h2 {
+            font-family: "Great Vibes", cursive;
+            color: #fff;
+            font-size: clamp(20px, 5vw, 28px);
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .clue p {
+            font-family: "Dancing Script", cursive;
+            font-size: clamp(16px, 4.5vw, 20px);
+            color: #fff;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .clue button {
+            padding: clamp(10px, 3vw, 12px) clamp(20px, 5vw, 25px);
+            font-size: clamp(14px, 4vw, 18px);
+            font-family: "Dancing Script", cursive;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.3s ease;
+            min-width: 120px;
+            min-height: 44px;
+        }
+
+        .clue button:hover,
+        .clue button:active {
+            transform: scale(1.05);
+        }
+
+        .heart {
+            position: absolute;
+            width: clamp(10px, 3vw, 18px);
+            height: clamp(10px, 3vw, 18px);
+            background: linear-gradient(45deg, #ff6b9d, #f093fb);
+            transform: translate(-50%, -50%) rotate(-45deg);
+            animation: floatHeart 3s ease-in-out forwards;
+            pointer-events: none;
+            z-index: 100;
+            box-shadow: 0 0 6px rgba(255, 107, 157, 0.5);
+        }
+
+        .heart:before,
+        .heart:after {
+            content: '';
+            width: clamp(10px, 3vw, 18px);
+            height: clamp(10px, 3vw, 18px);
+            position: absolute;
+            left: clamp(5px, 1.5vw, 9px);
+            top: 0;
+            background: linear-gradient(45deg, #ff6b9d, #f093fb);
+            border-radius: clamp(5px, 1.5vw, 9px) clamp(5px, 1.5vw, 9px) 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 clamp(5px, 1.5vw, 9px);
+        }
+
+        .heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: clamp(5px, 1.5vw, 9px) clamp(5px, 1.5vw, 9px);
+        }
+
+        @keyframes floatHeart {
+            0% { opacity: 1; transform: translate(-50%, -50%) rotate(-45deg) translateY(0); }
+            100% { opacity: 0; transform: translate(-50%, -50%) rotate(-45deg) translateY(-60px); }
+        }
+
+        .heart-burst {
+            position: absolute;
+            width: clamp(10px, 3vw, 18px);
+            height: clamp(10px, 3vw, 18px);
+            background: linear-gradient(45deg, #ff6b9d, #f093fb);
+            transform: translate(-50%, -50%) rotate(-45deg);
+            animation: burstHeart 1s ease-out forwards;
+            pointer-events: none;
+            z-index: 150;
+            box-shadow: 0 0 6px rgba(255, 107, 157, 0.5);
+        }
+
+        .heart-burst:before,
+        .heart-burst:after {
+            content: '';
+            width: clamp(10px, 3vw, 18px);
+            height: clamp(10px, 3vw, 18px);
+            position: absolute;
+            left: clamp(5px, 1.5vw, 9px);
+            top: 0;
+            background: linear-gradient(45deg, #ff6b9d, #f093fb);
+            border-radius: clamp(5px, 1.5vw, 9px) clamp(5px, 1.5vw, 9px) 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 clamp(5px, 1.5vw, 9px);
+        }
+
+        .heart-burst:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: clamp(5px, 1.5vw, 9px) clamp(5px, 1.5vw, 9px);
+        }
+
+        @keyframes burstHeart {
+            0% { opacity: 1; transform: translate(-50%, -50%) rotate(-45deg) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) rotate(-45deg) scale(1.3) translate(var(--tx), var(--ty)); }
+        }
+
+        .final-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.9), rgba(240, 147, 251, 0.9));
+            opacity: 0;
+            display: none;
+            z-index: 3000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .final-transition.active {
+            display: flex;
+            animation: fadeInGlow 2s ease forwards;
+        }
+
+        @keyframes fadeInGlow {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        .final-transition-message {
+            font-family: "Great Vibes", cursive;
+            font-size: clamp(20px, 5.5vw, 32px);
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInText 1.5s ease forwards;
+            opacity: 0;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        @keyframes fadeInText {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .final-petal {
+            position: absolute;
+            width: 12px;
+            height: 20px;
+            background: linear-gradient(45deg, #ff6b9d, #f8bbd9);
+            border-radius: 50% 50% 0 0;
+            animation: fallPetalFinal 3.5s linear forwards;
+            transform-origin: bottom;
+        }
+
+        @keyframes fallPetalFinal {
+            0% { transform: translate(-50%, -100%) rotate(0deg); opacity: 1; }
+            100% { transform: translate(-50%, 100vh) rotate(90deg); opacity: 0; }
+        }
+
+        .final-star {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkleFinal 1.5s ease-in-out forwards;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes twinkleFinal {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+
+        @media (max-width: 600px) {
+            .memory-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .memory-card {
+                width: clamp(50px, 25vw, 70px);
+                height: clamp(50px, 25vw, 70px);
+                font-size: 18px;
+            }
+
+            .constellation-canvas {
+                width: clamp(180px, 70vw, 250px);
+                height: clamp(180px, 70vw, 250px);
+            }
+
+            .star {
+                width: 14px;
+                height: 14px;
+            }
+
+            .letter-text {
+                font-size: clamp(13px, 4vw, 16px);
+                line-height: 1.5;
+            }
+
+            .word-slot {
+                font-size: clamp(13px, 4vw, 16px);
+                min-width: 40px;
+                padding: 3px 6px;
+            }
+
+            .letter-input {
+                font-size: clamp(14px, 4vw, 18px);
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="heart-audio" loop>
+        <source src="romantic_piano.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <audio id="memory-audio" loop>
+        <source src="sweet_memories.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <audio id="constellation-audio" loop>
+        <source src="starry_night.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <audio id="letter-audio" loop>
+        <source src="romantic_inspiration.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <audio id="final-transition-audio">
+        <source src="sparkle_transition.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="background-animations">
+        <div class="heart-bg"></div>
+        <div class="petal-bg"></div>
+        <div class="star-bg"></div>
+        <div class="orb-bg"></div>
+    </div>
+
+    <div class="intro" id="heart-intro">
+        <h1>A Treasure of Our Love, Shy 💕</h1>
+        <p>Fill our heart with the moments we've dreamed together.</p>
+        <button onclick="startHeartPuzzle()">Begin Our Love's Journey</button>
+        <div class="heart" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="heart" style="left: 25%; animation-delay: 0.5s;"></div>
+        <div class="heart" style="left: 40%; animation-delay: 1s;"></div>
+        <div class="heart" style="left: 55%; animation-delay: 1.5s;"></div>
+        <div class="heart" style="left: 70%; animation-delay: 2s;"></div>
+        <div class="heart" style="left: 85%; animation-delay: 2.5s;"></div>
+    </div>
+
+    <div class="intro" id="memory-intro" style="display: none;">
+        <h1>Hearts That Align, Shy 💕</h1>
+        <p>Match the symbols of our love to unlock the next chapter.</p>
+        <button onclick="startMemoryPuzzle()">Unveil Our Memories</button>
+        <div class="heart" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="heart" style="left: 25%; animation-delay: 0.5s;"></div>
+        <div class="heart" style="left: 40%; animation-delay: 1s;"></div>
+        <div class="heart" style="left: 55%; animation-delay: 1.5s;"></div>
+        <div class="heart" style="left: 70%; animation-delay: 2s;"></div>
+        <div class="heart" style="left: 85%; animation-delay: 2.5s;"></div>
+    </div>
+
+    <div class="intro" id="constellation-intro" style="display: none;">
+        <h1>Our Love's Constellation, Shy 💕</h1>
+        <p>Click the stars to reveal a message from my heart.</p>
+        <button onclick="startConstellationPuzzle()">Unveil Our Message</button>
+        <div class="heart" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="heart" style="left: 25%; animation-delay: 0.5s;"></div>
+        <div class="heart" style="left: 40%; animation-delay: 1s;"></div>
+        <div class="heart" style="left: 55%; animation-delay: 1.5s;"></div>
+        <div class="heart" style="left: 70%; animation-delay: 2s;"></div>
+        <div class="heart" style="left: 85%; animation-delay: 2.5s;"></div>
+    </div>
+
+    <div class="intro" id="letter-intro" style="display: none;">
+        <h1>Complete Our Love Letter, Shy 💕</h1>
+        <p>Fill in the missing words with the sweetest memories we share. Click a blank for a hint!</p>
+        <button onclick="startLetterPuzzle()">Write Our Love Story</button>
+        <div class="heart" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="heart" style="left: 25%; animation-delay: 0.5s;"></div>
+        <div class="heart" style="left: 40%; animation-delay: 1s;"></div>
+        <div class="heart" style="left: 55%; animation-delay: 1.5s;"></div>
+        <div class="heart" style="left: 70%; animation-delay: 2s;"></div>
+        <div class="heart" style="left: 85%; animation-delay: 2.5s;"></div>
+    </div>
+
+    <div class="main-content">
+        <h1 id="puzzle-title">Fill Our Heart, Shy 💕</h1>
+        
+        <div class="heart-container" id="heart-puzzle">
+            <div class="music-control pause" id="heart-music-control" onclick="toggleMusic('heart')"></div>
+            <div class="heart-shape" id="heart-shape">
+                <svg class="heart-svg" viewBox="0 0 100 100">
+                    <defs>
+                        <linearGradient id="heartGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                            <stop offset="0%" style="stop-color:#ff3366;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#ff6b9d;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path class="heart-fill" id="heart-fill" d="M50,85 C50,85 20,65 20,45 C20,35 30,25 40,25 C45,25 50,30 50,30 C50,30 55,25 60,25 C70,25 80,35 80,45 C80,65 50,85 50,85 Z"/>
+                    <path class="heart-outline" d="M50,85 C50,85 20,65 20,45 C20,35 30,25 40,25 C45,25 50,30 50,30 C50,30 55,25 60,25 C70,25 80,35 80,45 C80,65 50,85 50,85 Z"/>
+                </svg>
+            </div>
+            <div id="counter">Taps: 0</div>
+            <div id="progress-bar">
+                <div id="progress-fill"></div>
+            </div>
+            <div class="success-message" id="success-message">Our heart is full of love! 💖</div>
+            <button class="continue" id="continue-button" onclick="proceedToNextPuzzle()">Continue Our Journey</button>
+            <div class="error-message" id="error-message">Not enough love yet, my heart! Keep filling our heart 💖</div>
+        </div>
+
+        <div class="memory-container" id="memory-puzzle" style="display: none;">
+            <div class="music-control pause" id="memory-music-control" onclick="toggleMusic('memory')"></div>
+            <div class="memory-grid" id="memory-grid"></div>
+            <div id="memory-status">Find the matching pairs! 💕</div>
+            <div class="success-message" id="memory-success">All memories matched! Our love is complete! 💖</div>
+            <button class="continue" id="memory-continue" onclick="proceedToNextPuzzle()">Continue Our Journey</button>
+            <div class="error-message" id="memory-error">Keep searching for our matching memories, love! 💖</div>
+        </div>
+
+        <div class="constellation-container" id="constellation-puzzle" style="display: none;">
+            <div class="music-control pause" id="constellation-music-control" onclick="toggleMusic('constellation')"></div>
+            <div class="constellation-canvas" id="constellation-canvas"></div>
+            <div class="message-text" id="message-text"></div>
+            <div class="success-message" id="constellation-success">Our love's message shines bright! 💖</div>
+            <button class="continue" id="constellation-continue" onclick="proceedToNextPuzzle()">Continue Our Journey</button>
+            <div class="error-message" id="constellation-error">Click the stars in the right order, my love! 💖</div>
+        </div>
+
+        <div class="letter-container" id="letter-puzzle" style="display: none;">
+            <div class="music-control pause" id="letter-music-control" onclick="toggleMusic('letter')"></div>
+            <p class="letter-text">
+                My dearest Shy, every <span class="word-slot" data-answer="moment" data-hint="This word captures every second we share">_ _ _ _ _ _</span> with you feels like a <span class="word-slot" data-answer="dream" data-hint="This word describes how magical our time feels">_ _ _ _ _</span>. 
+                Your <span class="word-slot" data-answer="smile" data-hint="This word is what lights up my heart">_ _ _ _ _</span> lights up my <span class="word-slot" data-answer="world" data-hint="This word means everything to me because of you">_ _ _ _ _</span>, 
+                and I am so <span class="word-slot" data-answer="grateful" data-hint="This word expresses my thanks for you">_ _ _ _ _ _ _ _</span> for our <span class="word-slot" data-answer="love" data-hint="This word is the essence of us">_ _ _ _</span>. 💕
+            </p>
+            <input type="text" class="letter-input" id="letter-input" placeholder="Type the missing word..." />
+            <button class="submit" id="letter-submit" onclick="checkWord()">Complete This Word</button>
+            <div class="clue-prompt">Tap a word box for a clue! 💕</div>
+            <div class="success-message" id="letter-success">Our love letter is complete! 💖</div>
+            <button class="continue" id="letter-continue" onclick="proceedToNextPuzzle()">Continue Our Journey</button>
+            <div class="error-message" id="letter-error">Not quite right, my love. Click a blank for a hint! 💖</div>
+        </div>
+    </div>
+
+    <div class="clue">
+        <div class="clue-container">
+            <h2>A Whisper From My Heart</h2>
+            <p id="clue-text"></p>
+            <button onclick="closeClue()">Continue Seeking</button>
+        </div>
+    </div>
+
+    <div class="final-transition" id="final-transition">
+        <div class="final-transition-message" id="final-message">Congrats for completing💕</div>
+    </div>
+
+    <script>
+        let tapCount = 0;
+        let currentPuzzle = 'heart';
+        let puzzleSequence = ['heart', 'memory', 'constellation', 'letter'];
+        let currentPuzzleIndex = 0;
+        
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        const memorySymbols = ['💕', '💖', '💗', '💓', '💝', '💘'];
+        
+        let stars = [];
+        let connectedStars = [];
+        const targetSequence = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        const letterMapping = ['I', 'L', 'O', 'V', 'E', 'Y', 'O', 'U', 'S', 'O'];
+        
+        let currentWordIndex = 0;
+        const letterAnswers = ['moment', 'dream', 'smile', 'world', 'grateful', 'love'];
+        const letterHints = {
+            'moment': 'This word captures every second we share',
+            'dream': 'This word describes how magical our time feels',
+            'smile': 'This word is what lights up my heart',
+            'world': 'This word means everything to me because of you',
+            'grateful': 'This word expresses my thanks for you',
+            'love': 'This word is the essence of us'
+        };
+        
+        const audioElements = {
+            heart: document.getElementById('heart-audio'),
+            memory: document.getElementById('memory-audio'),
+            constellation: document.getElementById('constellation-audio'),
+            letter: document.getElementById('letter-audio'),
+            final: document.getElementById('final-transition-audio')
+        };
+
+        const counter = document.getElementById('counter');
+        const heartFill = document.getElementById('heart-fill');
+        const progressFill = document.getElementById('progress-fill');
+        const clueDiv = document.querySelector('.clue');
+        const clueText = document.getElementById('clue-text');
+        const puzzleTitle = document.getElementById('puzzle-title');
+        const mainContent = document.querySelector('.main-content');
+        const backgroundAnimations = document.querySelector('.background-animations');
+        const finalTransition = document.getElementById('final-transition');
+        const finalMessage = document.getElementById('final-message');
+
+        function createHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 3000);
+        }
+
+        function createHeartBurst() {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const angles = [0, 72, 144, 216, 288];
+            angles.forEach(angle => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart-burst');
+                heart.style.left = centerX + 'px';
+                heart.style.top = centerY + 'px';
+                const rad = angle * Math.PI / 180;
+                heart.style.setProperty('--tx', `${Math.cos(rad) * 80}px`);
+                heart.style.setProperty('--ty', `${Math.sin(rad) * 80}px`);
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1000);
+            });
+        }
+
+        function createFinalTransitionEffects() {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            const heartAngles = Array.from({ length: 8 }, (_, i) => i * 45);
+            heartAngles.forEach(angle => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart-burst');
+                heart.style.left = centerX + 'px';
+                heart.style.top = centerY + 'px';
+                const rad = angle * Math.PI / 180;
+                heart.style.setProperty('--tx', `${Math.cos(rad) * 120}px`);
+                heart.style.setProperty('--ty', `${Math.sin(rad) * 120}px`);
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1200);
+            });
+
+            for (let i = 0; i < 10; i++) {
+                const petal = document.createElement('div');
+                petal.classList.add('final-petal');
+                petal.style.left = `${Math.random() * 100}%`;
+                petal.style.top = `-${Math.random() * 20}%`;
+                petal.style.animationDelay = `${Math.random() * 1.5}s`;
+                document.body.appendChild(petal);
+                setTimeout(() => petal.remove(), 3500);
+            }
+
+            for (let i = 0; i < 8; i++) {
+                const star = document.createElement('div');
+                star.classList.add('final-star');
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 1}s`;
+                document.body.appendChild(star);
+                setTimeout(() => star.remove(), 1500);
+            }
+        }
+
+        function toggleMusic(puzzle) {
+            const audio = audioElements[puzzle];
+            const control = document.getElementById(`${puzzle}-music-control`);
+            if (audio.paused) {
+                audio.play().catch(e => console.log('Audio play failed:', e));
+                control.classList.remove('play');
+                control.classList.add('pause');
+            } else {
+                audio.pause();
+                control.classList.remove('pause');
+                control.classList.add('play');
+            }
+        }
+
+        function pauseAllAudio() {
+            Object.values(audioElements).forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+                const control = document.getElementById(`${audio.id.replace('-audio', '')}-music-control`);
+                if (control) {
+                    control.classList.remove('pause');
+                    control.classList.add('play');
+                }
+            });
+        }
+
+        function initBackgroundAnimations() {
+            const heartBg = document.querySelector('.heart-bg');
+            const petalBg = document.querySelector('.petal-bg');
+            const starBg = document.querySelector('.star-bg');
+            const orbBg = document.querySelector('.orb-bg');
+
+            [heartBg, petalBg, starBg, orbBg].forEach(bg => bg.innerHTML = '');
+
+            const isMobile = window.innerWidth <= 600;
+            const elementCount = isMobile ? 15 : 20;
+
+            for (let i = 0; i < elementCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.top = `${100 + Math.random() * 20}%`;
+                heart.style.animationDelay = `${Math.random() * 2}s`;
+                heartBg.appendChild(heart);
+
+                const petal = document.createElement('div');
+                petal.classList.add('petal');
+                petal.style.left = `${Math.random() * 100}%`;
+                petal.style.top = `-${Math.random() * 20}%`;
+                petal.style.animationDelay = `${Math.random() * 3}s`;
+                petalBg.appendChild(petal);
+
+                const star = document.createElement('div');
+                star.classList.add('bg-star');
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 1.5}s`;
+                starBg.appendChild(star);
+
+                const orb = document.createElement('div');
+                orb.classList.add('orb');
+                orb.style.left = `${Math.random() * 100}%`;
+                orb.style.top = `${Math.random() * 100}%`;
+                orb.style.animationDelay = `${Math.random() * 2.5}s`;
+                orbBg.appendChild(orb);
+            }
+        }
+
+        function showBackgroundForPuzzle(puzzle) {
+            const backgrounds = ['heart-bg', 'petal-bg', 'star-bg', 'orb-bg'];
+            backgrounds.forEach(bg => {
+                const element = document.querySelector(`.${bg}`);
+                element.classList.remove('active');
+            });
+
+            const bgMap = {
+                'heart': 'heart-bg',
+                'memory': 'petal-bg',
+                'constellation': 'star-bg',
+                'letter': 'orb-bg'
+            };
+
+            const targetBg = document.querySelector(`.${bgMap[puzzle]}`);
+            if (targetBg) {
+                targetBg.classList.add('active');
+            }
+        }
+
+        function initMemoryGame() {
+            const grid = document.getElementById('memory-grid');
+            grid.innerHTML = '';
+            memoryCards = [];
+            flippedCards = [];
+            matchedPairs = 0;
+            
+            const gameSymbols = [...memorySymbols, ...memorySymbols];
+            gameSymbols.sort(() => Math.random() - 0.5);
+            
+            gameSymbols.forEach((symbol, index) => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.symbol = symbol;
+                card.dataset.index = index;
+                card.addEventListener('click', () => flipCard(card));
+                card.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    flipCard(card);
+                }, { passive: false });
+                grid.appendChild(card);
+                memoryCards.push(card);
+            });
+        }
+
+        function flipCard(card) {
+            if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) {
+                return;
+            }
+            
+            card.classList.add('flipped');
+            card.textContent = card.dataset.symbol;
+            flippedCards.push(card);
+            
+            createHeart(window.innerWidth / 2, window.innerHeight / 2);
+            
+            if (flippedCards.length === 2) {
+                setTimeout(checkMemoryMatch, 1000);
+            }
+        }
+
+        function checkMemoryMatch() {
+            const [card1, card2] = flippedCards;
+            
+            if (card1.dataset.symbol === card2.dataset.symbol) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                
+                if (matchedPairs === memorySymbols.length) {
+                    document.getElementById('memory-success').classList.add('show');
+                    document.getElementById('memory-continue').classList.add('visible');
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.textContent = '';
+                card2.textContent = '';
+                document.getElementById('memory-error').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('memory-error').classList.remove('show');
+                }, 2000);
+            }
+            
+            flippedCards = [];
+        }
+
+        function generateDistractorPositions(targetPositions, count, canvasWidth, canvasHeight) {
+            const distractors = [];
+            const minDistance = 25;
+            while (distractors.length < count) {
+                const pos = {
+                    x: Math.random() * (canvasWidth - 20) + 10,
+                    y: Math.random() * (canvasHeight - 20) + 10
+                };
+                const tooClose = targetPositions.some(tp => 
+                    Math.hypot(tp.x - pos.x, tp.y - pos.y) < minDistance) ||
+                    distractors.some(dp => 
+                        Math.hypot(dp.x - pos.x, dp.y - pos.y) < minDistance);
+                if (!tooClose) distractors.push(pos);
+            }
+            return distractors;
+        }
+
+        function initConstellationGame() {
+            const canvas = document.getElementById('constellation-canvas');
+            const messageText = document.getElementById('message-text');
+            canvas.innerHTML = '';
+            messageText.innerHTML = '';
+            stars = [];
+            connectedStars = [];
+            
+            const canvasWidth = canvas.offsetWidth;
+            const canvasHeight = canvas.offsetHeight;
+            const scale = canvasWidth / 300;
+            const heartPositions = [
+                {x: 150 * scale, y: 110 * scale},
+                {x: 100 * scale, y: 90 * scale},
+                {x: 200 * scale, y: 90 * scale},
+                {x: 80 * scale, y: 140 * scale},
+                {x: 220 * scale, y: 140 * scale},
+                {x: 90 * scale, y: 190 * scale},
+                {x: 210 * scale, y: 190 * scale},
+                {x: 150 * scale, y: 240 * scale},
+                {x: 120 * scale, y: 210 * scale},
+                {x: 180 * scale, y: 210 * scale}
+            ];
+            
+            const distractorCount = window.innerWidth <= 600 ? 10 : 15;
+            const distractorPositions = generateDistractorPositions(heartPositions, distractorCount, canvasWidth, canvasHeight);
+            
+            heartPositions.forEach((pos, index) => {
+                const star = document.createElement('div');
+                star.classList.add("star");
+                star.style.left = pos.x + 'px';
+                star.style.top = pos.y + 'px';
+                star.dataset.index = index;
+                star.addEventListener('click', () => connectStar(star, index));
+                star.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    connectStar(star, index);
+                }, { passive: false });
+                canvas.appendChild(star);
+                stars.push(star);
+            });
+            
+            distractorPositions.forEach((pos, index) => {
+                const star = document.createElement('div');
+                star.classList.add('star', 'distractor');
+                star.style.left = pos.x + 'px';
+                star.style.top = pos.y + 'px';
+                star.dataset.index = `distractor-${index}`;
+                star.addEventListener('click', () => connectStar(star, `distractor-${index}`));
+                star.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    connectStar(star, `distractor-${index}`);
+                }, { passive: false });
+                canvas.appendChild(star);
+                stars.push(star);
+            });
+            
+            letterMapping.forEach((_, index) => {
+                const slot = document.createElement('span');
+                slot.classList.add('message-slot');
+                slot.textContent = '_';
+                slot.dataset.index = index;
+                messageText.appendChild(slot);
+            });
+        }
+
+        function connectStar(star, index) {
+            if (connectedStars.includes(index) || index.toString().startsWith('distractor')) {
+                document.getElementById('constellation-error').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('constellation-error').classList.remove('show');
+                }, 2000);
+                return;
+            }
+            
+            const expectedIndex = connectedStars.length;
+            if (index === targetSequence[expectedIndex]) {
+                star.classList.add('connected');
+                connectedStars.push(index);
+                
+                const letter = letterMapping[index];
+                const canvas = document.getElementById('constellation-canvas');
+                const messageSlots = document.querySelectorAll('.message-slot');
+                const targetSlot = messageSlots[index];
+                
+                const starRect = star.getBoundingClientRect();
+                const slotRect = targetSlot.getBoundingClientRect();
+                const canvasRect = canvas.getBoundingClientRect();
+                
+                const startX = starRect.left + 8;
+                const startY = starRect.top + 8;
+                const endX = slotRect.left + slotRect.width / 2;
+                const endY = slotRect.top + slotRect.height / 2;
+                
+                const letterDiv = document.createElement('div');
+                letterDiv.classList.add('flying-letter');
+                letterDiv.textContent = letter;
+                letterDiv.style.left = startX + 'px';
+                letterDiv.style.top = startY + 'px';
+                letterDiv.style.setProperty('--tx', (endX - startX) + 'px');
+                letterDiv.style.setProperty('--ty', (endY - startY) + 'px');
+                document.body.appendChild(letterDiv);
+                
+                setTimeout(() => {
+                    targetSlot.textContent = letter;
+                    targetSlot.classList.add('filled');
+                    letterDiv.remove();
+                }, 1000);
+                
+                createHeart(window.innerWidth / 2, window.innerHeight / 2);
+                
+                if (connectedStars.length === targetSequence.length) {
+                    document.getElementById('constellation-success').classList.add('show');
+                    document.getElementById('constellation-continue').classList.add('visible');
+                }
+            } else {
+                document.getElementById('constellation-error').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('constellation-error').classList.remove('show');
+                }, 2000);
+            }
+        }
+
+        function initLetterGame() {
+            currentWordIndex = 0;
+            const input = document.getElementById('letter-input');
+            const submit = document.getElementById('letter-submit');
+            
+            input.value = '';
+            input.style.display = 'block';
+            submit.classList.add('visible');
+            document.querySelectorAll('.word-slot').forEach(slot => {
+                const answer = slot.dataset.answer;
+                slot.textContent = slot.classList.contains('filled') ? answer : '_ '.repeat(answer.length).trim();
+                slot.classList.remove('filled');
+                slot.addEventListener('click', () => showLetterHint(slot));
+                slot.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    showLetterHint(slot);
+                }, { passive: false });
+            });
+            
+            highlightCurrentSlot();
+            input.focus();
+        }
+
+        function highlightCurrentSlot() {
+            const slots = document.querySelectorAll('.word-slot');
+            slots.forEach((slot, index) => {
+                slot.style.background = index === currentWordIndex ? 
+                    'rgba(255, 255, 255, 0.5)' : 
+                    (slot.classList.contains('filled') ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.2)');
+            });
+        }
+
+        function showLetterHint(slot) {
+            if (!slot.classList.contains('filled')) {
+                const hint = slot.dataset.hint;
+                showClue(hint);
+            }
+        }
+
+        function checkWord() {
+            const input = document.getElementById('letter-input');
+            const word = input.value.toLowerCase().trim();
+            const slots = document.querySelectorAll('.word-slot');
+            
+            if (word === letterAnswers[currentWordIndex]) {
+                slots[currentWordIndex].textContent = word;
+                slots[currentWordIndex].classList.add('filled');
+                currentWordIndex++;
+                
+                createHeart(window.innerWidth / 2, window.innerHeight / 2);
+                
+                if (currentWordIndex >= letterAnswers.length) {
+                    document.getElementById('letter-success').classList.add('show');
+                    document.getElementById('letter-continue').classList.add('visible');
+                    document.getElementById('letter-submit').style.display = 'none';
+                    input.style.display = 'none';
+                    document.querySelector('.clue-prompt').style.display = 'none';
+                } else {
+                    input.value = '';
+                    input.focus();
+                    highlightCurrentSlot();
+                }
+            } else {
+                document.getElementById('letter-error').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('letter-error').classList.remove('show');
+                }, 2000);
+            }
+        }
+
+        function proceedToNextPuzzle() {
+            mainContent.classList.add('hidden');
+            createHeartBurst();
+            pauseAllAudio();
+            
+            setTimeout(() => {
+                currentPuzzleIndex++;
+                
+                if (currentPuzzleIndex >= puzzleSequence.length) {
+                    finalTransition.classList.add('active');
+                    finalMessage.textContent = 'Congrats for completing💕';
+                    createFinalTransitionEffects();
+                    audioElements.final.play().catch(e => console.log('Final transition audio play failed:', e));
+                    
+                    setTimeout(() => {
+                        finalMessage.textContent = 'Wait for a moment...';
+                        createFinalTransitionEffects();
+                    }, 3000);
+                    
+                    setTimeout(() => {
+                        if (window.location.href.includes('garden.html')) {
+                            alert('Our love journey has blossomed! 💖 Thank you for completing our story, Shy.');
+                        } else {
+                            window.location.href = 'garden.html';
+                        }
+                    }, 9000);
+                    return;
+                }
+                
+                const nextPuzzle = puzzleSequence[currentPuzzleIndex];
+                document.getElementById(nextPuzzle + '-intro').style.display = 'flex';
+                document.getElementById(nextPuzzle + '-intro').classList.remove('hidden');
+                mainContent.classList.remove('visible', 'hidden');
+            }, 500);
+        }
+
+        function showClue(clue) {
+            clueText.textContent = clue;
+            clueDiv.classList.add('show');
+        }
+
+        function closeClue() {
+            clueDiv.classList.remove('show');
+            document.getElementById('letter-input').focus();
+        }
+
+        function tapHeart() {
+            if (tapCount >= 50) return;
+            tapCount++;
+            const fillPercentage = Math.min((tapCount / 50) * 100, 100);
+            
+            heartFill.style.clipPath = `inset(${100 - fillPercentage}% 0 0 0)`;
+            progressFill.style.width = `${fillPercentage}%`;
+            counter.textContent = `Taps: ${tapCount}`;
+            
+            createHeart(window.innerWidth / 2, window.innerHeight / 2);
+            
+            if (tapCount >= 50) {
+                document.getElementById('success-message').classList.add('show');
+                document.getElementById('continue-button').classList.add('visible');
+            } else {
+                document.getElementById('error-message').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('error-message').classList.remove('show');
+                }, 2000);
+            }
+        }
+
+        function startHeartPuzzle() {
+            document.getElementById('heart-intro').classList.add('hidden');
+            createHeartBurst();
+            pauseAllAudio();
+            setTimeout(() => {
+                mainContent.classList.add('visible');
+                switchToPuzzle('heart');
+                tapCount = 0;
+                heartFill.style.clipPath = 'inset(100% 0 0 0)';
+                progressFill.style.width = '0%';
+                counter.textContent = 'Taps: 0';
+                document.getElementById('success-message').classList.remove('show');
+                document.getElementById('continue-button').classList.remove('visible');
+                const audio = audioElements.heart;
+                audio.play().catch(e => console.log('Heart audio play failed:', e));
+                const control = document.getElementById('heart-music-control');
+                control.classList.remove('play');
+                control.classList.add('pause');
+            }, 500);
+        }
+
+        function startMemoryPuzzle() {
+            document.getElementById('memory-intro').classList.add('hidden');
+            createHeartBurst();
+            pauseAllAudio();
+            setTimeout(() => {
+                mainContent.classList.add('visible');
+                switchToPuzzle('memory');
+                initMemoryGame();
+                const audio = audioElements.memory;
+                audio.play().catch(e => console.log('Memory audio play failed:', e));
+                const control = document.getElementById('memory-music-control');
+                control.classList.remove('play');
+                control.classList.add('pause');
+            }, 500);
+        }
+
+        function startConstellationPuzzle() {
+            document.getElementById('constellation-intro').classList.add('hidden');
+            createHeartBurst();
+            pauseAllAudio();
+            setTimeout(() => {
+                mainContent.classList.add('visible');
+                switchToPuzzle('constellation');
+                initConstellationGame();
+                const audio = audioElements.constellation;
+                audio.play().catch(e => console.log('Constellation audio play failed:', e));
+                const control = document.getElementById('constellation-music-control');
+                control.classList.remove('play');
+                control.classList.add('pause');
+            }, 500);
+        }
+
+        function startLetterPuzzle() {
+            document.getElementById('letter-intro').classList.add('hidden');
+            createHeartBurst();
+            pauseAllAudio();
+            setTimeout(() => {
+                mainContent.classList.add('visible');
+                switchToPuzzle('letter');
+                initLetterGame();
+                const audio = audioElements.letter;
+                audio.play().catch(e => console.log('Letter audio play failed:', e));
+                const control = document.getElementById('letter-music-control');
+                control.classList.remove('play');
+                control.classList.add('pause');
+            }, 500);
+        }
+
+        function switchToPuzzle(puzzleName) {
+            document.getElementById('heart-puzzle').style.display = 'none';
+            document.getElementById('memory-puzzle').style.display = 'none';
+            document.getElementById('constellation-puzzle').style.display = 'none';
+            document.getElementById('letter-puzzle').style.display = 'none';
+            
+            document.getElementById(puzzleName + '-puzzle').style.display = 'flex';
+            currentPuzzle = puzzleName;
+            
+            const titles = {
+                'heart': 'Fill Our Heart💕',
+                'memory': 'Hearts That Align💕',
+                'constellation': 'Our Love\'s Constellation',
+                'letter': 'Complete Our Love Letter💕'
+            };
+            puzzleTitle.textContent = titles[puzzleName];
+
+            showBackgroundForPuzzle(puzzleName);
+        }
+
+        initBackgroundAnimations();
+
+        window.addEventListener('resize', () => {
+            initBackgroundAnimations();
+            if (currentPuzzle === 'constellation') {
+                initConstellationGame();
+            }
+        });
+
+        setInterval(() => {
+            if (window.innerWidth > 600) {
+                createHeart(
+                    Math.random() * window.innerWidth,
+                    Math.random() * window.innerHeight
+                );
+            }
+        }, 2000);
+
+        window.onload = () => {
+            initBackgroundAnimations();
+            showBackgroundForPuzzle('heart');
+
+            const heartShape = document.getElementById('heart-shape');
+            heartShape.addEventListener('click', tapHeart);
+            heartShape.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                tapHeart();
+            }, { passive: false });
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (currentPuzzle === 'heart' && e.key === ' ') {
+                e.preventDefault();
+                tapHeart();
+            } else if (currentPuzzle === 'letter' && e.key === 'Enter') {
+                e.preventDefault();
+                checkWord();
+            }
+        });
+
+        document.addEventListener('touchstart', (e) => {
+            if (e.target.classList.contains('heart-shape') || 
+                e.target.classList.contains('memory-card') || 
+                e.target.classList.contains('star') || 
+                e.target.classList.contains('word-slot') || 
+                e.target.classList.contains('music-control') || 
+                e.target.tagName === 'BUTTON' || 
+                e.target.id === 'letter-input') {
+                return;
+            }
+            e.preventDefault();
+        }, { passive: false });
+    </script>
+</body>
+</html>
