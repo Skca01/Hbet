@@ -582,6 +582,7 @@
     <h1 id="title">Click on the center flower</h1>
     <audio id="backgroundMusic" loop>
         <source src="blue.mp3" type="audio/mpeg">
+        <source src="blue.m4a" type="audio/mp4">
         Your browser does not support the audio element.
     </audio>
 
@@ -665,6 +666,8 @@
             let gardenStarted = false;
             let gardenComplete = false;
             let positionIndex = 0;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            let audioContext;
 
             function getFlowerPositions() {
                 return [
@@ -978,11 +981,26 @@
                 if (title) {
                     title.innerHTML = 'Happy Monthsary Shy💕<br><small>Every tap shows how beautiful you are🥰💕</small>';
                 }
-                const music = document.getElementById('backgroundMusic');
-                if (music) {
-                    music.play().catch(error => {
-                        console.log("Audio playback failed:", error);
+            }
+
+            function playMusic() {
+                if (!audioContext) {
+                    audioContext = new AudioContext();
+                    audioContext.resume().then(() => {
+                        const music = document.getElementById('backgroundMusic');
+                        if (music) {
+                            music.play().catch(error => {
+                                console.log("Audio playback failed:", error);
+                            });
+                        }
                     });
+                } else {
+                    const music = document.getElementById('backgroundMusic');
+                    if (music) {
+                        music.play().catch(error => {
+                            console.log("Audio playback failed:", error);
+                        });
+                    }
                 }
             }
 
@@ -1076,6 +1094,7 @@
             document.addEventListener('click', (e) => {
                 if (e.target.classList.contains('initial')) {
                     e.stopPropagation();
+                    playMusic();
                     startGarden();
                     createHeart(e.clientX, e.clientY);
                     createSparkle(e.clientX, e.clientY);
@@ -1088,10 +1107,10 @@
             });
 
             document.addEventListener('touchstart', (e) => {
-                e.preventDefault();
                 const touch = e.touches[0];
                 if (e.target.classList.contains('initial')) {
                     e.stopPropagation();
+                    playMusic();
                     startGarden();
                     createHeart(touch.clientX, touch.clientY);
                     createSparkle(touch.clientX, touch.clientY);
