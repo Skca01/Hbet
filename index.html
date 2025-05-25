@@ -48,6 +48,7 @@
             padding: 0 10px;
             box-sizing: border-box;
             opacity: 0;
+            display: none; /* Initially hidden */
         }
 
         @keyframes romanticMove {
@@ -108,7 +109,7 @@
             transform: translate(-50%, 0%);
             animation: sway 5s ease-in-out infinite;
             z-index: 200;
-            display: none; /* Hidden initially */
+            display: none; /* Initially hidden */
         }
 
         .new-flower {
@@ -578,46 +579,102 @@
             50% { transform: translate(-50%, -50%) rotate(-45deg) scale(1.2); }
         }
 
-        .start-button {
+        /* Welcome Screen Styles */
+        #welcome-screen {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(45deg, #ff6b9d, #f8bbd9);
-            padding: 15px 30px;
-            border-radius: 12px;
-            font-family: "Dancing Script", cursive;
-            font-size: clamp(20px, 6vw, 32px);
-            color: #fff;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(to bottom, #f8bbd9, #f093fb);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
             text-align: center;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            cursor: pointer;
-            z-index: 1300;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        #welcome-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #welcome-screen h2 {
+            font-family: "Parisienne", cursive;
+            font-size: clamp(28px, 8vw, 40px);
+            color: #fff;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            animation: glow 2.5s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+            50% { text-shadow: 0 0 20px rgba(255,255,255,0.8); }
+            100% { text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        }
+
+        #welcome-screen p {
+            font-family: "Dancing Script", cursive;
+            font-size: clamp(16px, 4vw, 20px);
+            color: #ffe4e6;
+            max-width: 80%;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b9d, #f093fb);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
             border: none;
-            outline: none;
-            animation: pulseButton 2s ease-in-out infinite;
+            cursor: pointer;
+            font-size: clamp(16px, 4vw, 18px);
+            font-family: "Great Vibes", cursive;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(255,107,157,0.5);
+            z-index: 100;
         }
 
-        .start-button:hover {
+        .btn:hover {
+            transform: translateY(-2px) scale(1.02);
             background: linear-gradient(45deg, #f093fb, #ff6b9d);
-            box-shadow: 0 0 20px rgba(255,107,157,0.6);
+            box-shadow: 0 8px 15px rgba(255,107,157,0.7);
         }
 
-        @keyframes pulseButton {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.05); }
+        .btn::before {
+            content: '🌸';
+            margin-right: 0.4rem;
+            font-size: 1.2rem;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            20% { transform: scale(1.15); }
+            40% { transform: scale(1); }
+            60% { transform: scale(1.15); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
 <body>
-    <button class="start-button" id="startButton">Begin Our Love's Garden 💕</button>
-    <h1 id="title" style="display: none;">Click on the center flower</h1>
+    <div id="welcome-screen">
+        <h2>My Dearest Shy</h2>
+        <p>A garden of love awaits you. Click below to let our story bloom.</p>
+        <button id="begin-btn" class="btn">Begin Our Garden</button>
+    </div>
+
+    <h1 id="title">Click on the center flower</h1>
     <audio id="backgroundMusic" loop>
         <source src="blue.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
-    <div class="sunflwr" id="centerFlower">
+    <div class="sunflwr">
         <div class="sunflwr__leaf--left"></div>
         <div class="sunflwr__leaf--right"></div>
         <div class="sunflwr__stem"></div>
@@ -1011,7 +1068,6 @@
                 const title = document.querySelector('#title');
                 if (title) {
                     title.innerHTML = 'Happy Monthsary Shy💕<br><small>Every tap shows how beautiful you are🥰💕</small>';
-                    title.style.display = 'block'; // Show title
                 }
                 createHeart(x, y);
                 createSparkle(x, y);
@@ -1121,30 +1177,24 @@
                 }
             }
 
-            const startButton = document.getElementById('startButton');
-            const centerFlower = document.getElementById('centerFlower');
+            // Welcome Screen Logic
+            const welcomeScreen = document.getElementById('welcome-screen');
+            const beginBtn = document.getElementById('begin-btn');
+            const title = document.getElementById('title');
+            const sunflwr = document.querySelector('.sunflwr');
             const music = document.getElementById('backgroundMusic');
 
-            startButton.addEventListener('click', () => {
+            beginBtn.addEventListener('click', () => {
+                welcomeScreen.classList.add('hidden');
                 music.play().catch(error => {
-                    console.log("Audio playback failed:", error);
+                    console.error("Audio playback failed:", error);
                 });
-                startButton.style.display = 'none'; // Hide button
-                centerFlower.style.display = 'block'; // Show center flower
-                const title = document.querySelector('#title');
-                title.style.display = 'block'; // Show title
+                setTimeout(() => {
+                    welcomeScreen.style.display = 'none';
+                    title.style.display = 'block';
+                    sunflwr.style.display = 'block';
+                }, 1000); // Match transition duration
             });
-
-            startButton.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                music.play().catch(error => {
-                    console.log("Audio playback failed:", error);
-                });
-                startButton.style.display = 'none'; // Hide button
-                centerFlower.style.display = 'block'; // Show center flower
-                const title = document.querySelector('#title');
-                title.style.display = 'block'; // Show title
-            }, { passive: false });
 
             document.addEventListener('click', (e) => {
                 if ('ontouchstart' in window) return; // Ignore click events on touch devices
