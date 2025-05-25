@@ -108,6 +108,7 @@
             transform: translate(-50%, 0%);
             animation: sway 5s ease-in-out infinite;
             z-index: 200;
+            display: none; /* Hidden initially */
         }
 
         .new-flower {
@@ -303,8 +304,7 @@
             100% { opacity: 0; transform: translate(-50%, -50%) rotate(-45deg) translateY(-80px); }
         }
 
-        @keyframes fad
-eLoveHeart {
+        @keyframes fadeLoveHeart {
             0%, 100% { opacity: 0; transform: translate(-50%, -50%) rotate(-45deg) scale(0.8); }
             50% { opacity: 0.7; transform: translate(-50%, -50%) rotate(-45deg) scale(1); }
         }
@@ -577,16 +577,47 @@ eLoveHeart {
             0%, 100% { transform: translate(-50%, -50%) rotate(-45deg) scale(1); }
             50% { transform: translate(-50%, -50%) rotate(-45deg) scale(1.2); }
         }
+
+        .start-button {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #ff6b9d, #f8bbd9);
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-family: "Dancing Script", cursive;
+            font-size: clamp(20px, 6vw, 32px);
+            color: #fff;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 1300;
+            border: none;
+            outline: none;
+            animation: pulseButton 2s ease-in-out infinite;
+        }
+
+        .start-button:hover {
+            background: linear-gradient(45deg, #f093fb, #ff6b9d);
+            box-shadow: 0 0 20px rgba(255,107,157,0.6);
+        }
+
+        @keyframes pulseButton {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
     </style>
 </head>
 <body>
-    <h1 id="title">Click on the center flower</h1>
+    <button class="start-button" id="startButton">Begin Our Love's Garden 💕</button>
+    <h1 id="title" style="display: none;">Click on the center flower</h1>
     <audio id="backgroundMusic" loop>
         <source src="blue.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
-    <div class="sunflwr">
+    <div class="sunflwr" id="centerFlower">
         <div class="sunflwr__leaf--left"></div>
         <div class="sunflwr__leaf--right"></div>
         <div class="sunflwr__stem"></div>
@@ -980,12 +1011,7 @@ eLoveHeart {
                 const title = document.querySelector('#title');
                 if (title) {
                     title.innerHTML = 'Happy Monthsary Shy💕<br><small>Every tap shows how beautiful you are🥰💕</small>';
-                }
-                const music = document.getElementById('backgroundMusic');
-                if (music) {
-                    music.play().catch(error => {
-                        console.log("Audio playback failed:", error);
-                    });
+                    title.style.display = 'block'; // Show title
                 }
                 createHeart(x, y);
                 createSparkle(x, y);
@@ -1094,6 +1120,31 @@ eLoveHeart {
                     growFlower(x, y);
                 }
             }
+
+            const startButton = document.getElementById('startButton');
+            const centerFlower = document.getElementById('centerFlower');
+            const music = document.getElementById('backgroundMusic');
+
+            startButton.addEventListener('click', () => {
+                music.play().catch(error => {
+                    console.log("Audio playback failed:", error);
+                });
+                startButton.style.display = 'none'; // Hide button
+                centerFlower.style.display = 'block'; // Show center flower
+                const title = document.querySelector('#title');
+                title.style.display = 'block'; // Show title
+            });
+
+            startButton.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                music.play().catch(error => {
+                    console.log("Audio playback failed:", error);
+                });
+                startButton.style.display = 'none'; // Hide button
+                centerFlower.style.display = 'block'; // Show center flower
+                const title = document.querySelector('#title');
+                title.style.display = 'block'; // Show title
+            }, { passive: false });
 
             document.addEventListener('click', (e) => {
                 if ('ontouchstart' in window) return; // Ignore click events on touch devices
