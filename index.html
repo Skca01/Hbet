@@ -167,20 +167,19 @@
         }
 
         .main-content {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            z-index: 10;
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            display: none;
+            z-index: 10;
             box-sizing: border-box;
         }
 
         .main-content.visible {
-            display: flex;
+            display: block;
             opacity: 1;
-            transform: scale(1);
         }
 
         .music-control {
@@ -702,9 +701,11 @@
     </audio>
 
     <div class="intro" id="garden-intro">
-        <h1>My Love's Garden, Shy 💕</h1>
-        <p>Plant the seeds of our love with each tap.</p>
-        <button onclick="startGarden()">Begin Our Garden</button>
+        <h1>Hayts Petchay gyud, limot2 man😌</h1>
+        <p>Thankful gihapon ko HAHAHAHAHA</p>
+        <p>Bali 10 na ka pics make sure nga mo appear tanan.</p>
+        <p>Take it slow po, thankssss😘.</p>
+        <button onclick="startGarden()">Begin the Garden of You</button>
         <div class="heart" style="left: 10%; animation-delay: 0s;"></div>
         <div class="heart" style="left: 25%; animation-delay: 0.5s;"></div>
         <div class="heart" style="left: 40%; animation-delay: 1s;"></div>
@@ -1137,7 +1138,6 @@
                 }, 500);
             }
 
-            // Expose startGarden to the global scope
             window.startGarden = startGarden;
 
             function growFlower(clickX, clickY) {
