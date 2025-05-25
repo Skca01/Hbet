@@ -303,7 +303,8 @@
             100% { opacity: 0; transform: translate(-50%, -50%) rotate(-45deg) translateY(-80px); }
         }
 
-        @keyframes fadeLoveHeart {
+        @keyframes fad
+eLoveHeart {
             0%, 100% { opacity: 0; transform: translate(-50%, -50%) rotate(-45deg) scale(0.8); }
             50% { opacity: 0.7; transform: translate(-50%, -50%) rotate(-45deg) scale(1); }
         }
@@ -582,7 +583,6 @@
     <h1 id="title">Click on the center flower</h1>
     <audio id="backgroundMusic" loop>
         <source src="blue.mp3" type="audio/mpeg">
-        <source src="blue.m4a" type="audio/mp4">
         Your browser does not support the audio element.
     </audio>
 
@@ -666,8 +666,8 @@
             let gardenStarted = false;
             let gardenComplete = false;
             let positionIndex = 0;
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            let audioContext;
+            let lastInteractionTime = 0;
+            const debounceTime = 300; // 300ms debounce
 
             function getFlowerPositions() {
                 return [
@@ -970,7 +970,7 @@
                 setTimeout(displayNextMessage, 1500);
             }
 
-            function startGarden() {
+            function startGarden(x, y) {
                 if (gardenStarted) return;
                 gardenStarted = true;
                 const initialCenter = document.querySelector('.sunflwr__center.initial');
@@ -981,27 +981,14 @@
                 if (title) {
                     title.innerHTML = 'Happy Monthsary Shy💕<br><small>Every tap shows how beautiful you are🥰💕</small>';
                 }
-            }
-
-            function playMusic() {
-                if (!audioContext) {
-                    audioContext = new AudioContext();
-                    audioContext.resume().then(() => {
-                        const music = document.getElementById('backgroundMusic');
-                        if (music) {
-                            music.play().catch(error => {
-                                console.log("Audio playback failed:", error);
-                            });
-                        }
+                const music = document.getElementById('backgroundMusic');
+                if (music) {
+                    music.play().catch(error => {
+                        console.log("Audio playback failed:", error);
                     });
-                } else {
-                    const music = document.getElementById('backgroundMusic');
-                    if (music) {
-                        music.play().catch(error => {
-                            console.log("Audio playback failed:", error);
-                        });
-                    }
                 }
+                createHeart(x, y);
+                createSparkle(x, y);
             }
 
             function growFlower(clickX, clickY) {
@@ -1091,36 +1078,33 @@
                 }
             }
 
-            document.addEventListener('click', (e) => {
-                if (e.target.classList.contains('initial')) {
-                    e.stopPropagation();
-                    playMusic();
-                    startGarden();
-                    createHeart(e.clientX, e.clientY);
-                    createSparkle(e.clientX, e.clientY);
+            function handleInteraction(x, y, target) {
+                const currentTime = Date.now();
+                if (currentTime - lastInteractionTime < debounceTime) {
+                    return;
+                }
+                lastInteractionTime = currentTime;
+
+                if (target.classList.contains('initial')) {
+                    startGarden(x, y);
                     return;
                 }
                 
                 if (gardenStarted) {
-                    growFlower(e.clientX, e.clientY);
+                    growFlower(x, y);
                 }
+            }
+
+            document.addEventListener('click', (e) => {
+                if ('ontouchstart' in window) return; // Ignore click events on touch devices
+                handleInteraction(e.clientX, e.clientY, e.target);
             });
 
             document.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Prevent default to avoid duplicate events
                 const touch = e.touches[0];
-                if (e.target.classList.contains('initial')) {
-                    e.stopPropagation();
-                    playMusic();
-                    startGarden();
-                    createHeart(touch.clientX, touch.clientY);
-                    createSparkle(touch.clientX, touch.clientY);
-                    return;
-                }
-                
-                if (gardenStarted) {
-                    growFlower(touch.clientX, touch.clientY);
-                }
-            });
+                handleInteraction(touch.clientX, touch.clientY, e.target);
+            }, { passive: false });
 
             setInterval(() => {
                 createSparkle(
