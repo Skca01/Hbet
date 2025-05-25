@@ -52,21 +52,9 @@
         }
 
         @keyframes romanticMove {
-            0% { 
-                transform: translate(0, 100vh) scale(0.8) rotate(0deg); 
-                opacity: 0; 
-                filter: blur(5px);
-            }
-            50% { 
-                transform: translate(0, 20px) scale(1.1) rotate(2deg); 
-                opacity: 0.7; 
-                filter: blur(2px);
-            }
-            100% { 
-                transform: translate(0, 0) scale(1) rotate(0deg); 
-                opacity: 1; 
-                filter: blur(0);
-            }
+            0% { transform: translate(0, 100vh) scale(0.8) rotate(0deg); opacity: 0; filter: blur(5px); }
+            50% { transform: translate(0, 20px) scale(1.1) rotate(2deg); opacity: 0.7; filter: blur(2px); }
+            100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; filter: blur(0); }
         }
 
         @media (max-width: 600px) {
@@ -90,14 +78,8 @@
         }
 
         @keyframes smallFadeIn {
-            0% { 
-                opacity: 0; 
-                transform: translateY(20px) scale(0.9); 
-            }
-            100% { 
-                opacity: 1; 
-                transform: translateY(0) scale(1); 
-            }
+            0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .sunflwr {
@@ -603,7 +585,7 @@
         }
 
         #welcome-screen h2 {
-            font-family: "Parisienne", cursive;
+            font-family: "Great Vibes", cursive;
             font-size: clamp(28px, 8vw, 40px);
             color: #fff;
             margin-bottom: 1.5rem;
@@ -628,15 +610,16 @@
         .btn {
             background: linear-gradient(45deg, #ff6b9d, #f093fb);
             color: white;
-            padding: 0.7rem 1.5rem;
+            padding: 1rem 2rem; /* Increased padding for larger touch target */
             border-radius: 25px;
             border: none;
             cursor: pointer;
-            font-size: clamp(16px, 4vw, 18px);
+            font-size: clamp(18px, 4.5vw, 20px);
             font-family: "Great Vibes", cursive;
             transition: all 0.4s ease;
             box-shadow: 0 0 15px rgba(255,107,157,0.5);
-            z-index: 100;
+            z-index: 2100; /* Ensure button is above all else */
+            touch-action: manipulation; /* Improve touch responsiveness */
         }
 
         .btn:hover {
@@ -659,6 +642,23 @@
             60% { transform: scale(1.15); }
             100% { transform: scale(1); }
         }
+
+        /* Audio Error Message */
+        #audio-error {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 107, 157, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: "Dancing Script", cursive;
+            font-size: 16px;
+            z-index: 2200;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -673,6 +673,7 @@
         <source src="blue.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
+    <div id="audio-error">Unable to play music. Please try refreshing the page.</div>
 
     <div class="sunflwr">
         <div class="sunflwr__leaf--left"></div>
@@ -1071,6 +1072,7 @@
                 }
                 createHeart(x, y);
                 createSparkle(x, y);
+                // console.log('Garden started at:', x, y);
             }
 
             function growFlower(clickX, clickY) {
@@ -1158,22 +1160,26 @@
                     showCompletionMessage();
                     startCherryBlossoms();
                 }
+                // console.log('New flower added. Total flowers:', flowerCount);
             }
 
             function handleInteraction(x, y, target) {
                 const currentTime = Date.now();
                 if (currentTime - lastInteractionTime < debounceTime) {
+                    // console.log('Interaction debounced');
                     return;
                 }
                 lastInteractionTime = currentTime;
 
                 if (target.classList.contains('initial')) {
                     startGarden(x, y);
+                    // console.log('Initial center clicked');
                     return;
                 }
-                
-                if (gardenStarted) {
+
+                if (gardenStarted && target.classList.contains('sunflwr__center')) {
                     growFlower(x, y);
+                    // console.log('Flower center clicked');
                 }
             }
 
@@ -1183,29 +1189,73 @@
             const title = document.getElementById('title');
             const sunflwr = document.querySelector('.sunflwr');
             const music = document.getElementById('backgroundMusic');
+            const audioError = document.getElementById('audio-error');
 
             beginBtn.addEventListener('click', () => {
                 welcomeScreen.classList.add('hidden');
-                music.play().catch(error => {
-                    console.error("Audio playback failed:", error);
-                });
+                const playPromise = music.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.error("Audio playback failed:", error);
+                        audioError.style.display = 'block';
+                        setTimeout(() => audioError.style.display = 'none', 5000);
+                    });
+                }
                 setTimeout(() => {
                     welcomeScreen.style.display = 'none';
                     title.style.display = 'block';
                     sunflwr.style.display = 'block';
                 }, 1000); // Match transition duration
+                // console.log('Begin button clicked');
             });
 
+            // Add touch event for button explicitly
+            beginBtn.addEventListener('touchstart', (e) => {
+                e.stopPropagation(); // Prevent touchstart from bubbling to document
+                beginBtn.click(); // Trigger click event
+                // console.log('Begin button touched');
+            }, { passive: true });
+
+            // Event listeners for sunflower interactions
+            const centers = document.querySelectorAll('.sunflwr__center');
             document.addEventListener('click', (e) => {
-                if ('ontouchstart' in window) return; // Ignore click events on touch devices
-                handleInteraction(e.clientX, e.clientY, e.target);
+                const target = e.target.closest('.sunflwr__center');
+                if (target) {
+                    handleInteraction(e.clientX, e.clientY, target);
+                }
             });
 
             document.addEventListener('touchstart', (e) => {
-                e.preventDefault(); // Prevent default to avoid duplicate events
+                const target = e.target.closest('.sunflwr__center');
+                if (target) {
+                    e.preventDefault(); // Prevent default only for sunflower touches
+                    const touch = e.touches[0];
+                    handleInteraction(touch.clientX, touch.clientY, target);
+                }
+            }, { passive: false });
+
+            // Update centers when new flowers are added
+            const observer = new MutationObserver(() => {
+                const newCenters = document.querySelectorAll('.sunflwr__center');
+                newCenters.forEach(center => {
+                    center.removeEventListener('click', handleCenterClick);
+                    center.addEventListener('click', handleCenterClick);
+                    center.removeEventListener('touchstart', handleCenterTouch);
+                    center.addEventListener('touchstart', handleCenterTouch, { passive: false });
+                });
+            });
+
+            function handleCenterClick(e) {
+                handleInteraction(e.clientX, e.clientY, e.target);
+            }
+
+            function handleCenterTouch(e) {
+                e.preventDefault();
                 const touch = e.touches[0];
                 handleInteraction(touch.clientX, touch.clientY, e.target);
-            }, { passive: false });
+            }
+
+            observer.observe(document.body, { childList: true, subtree: true });
 
             setInterval(() => {
                 createSparkle(
